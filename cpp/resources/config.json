@@ -1,0 +1,32 @@
+{
+    "gui": true,
+    "pretty_print": true,
+    "debug_visible": true,
+    "name": "Tic-Tac-Toe",
+    "window":{
+        "width": 600,
+        "height": 630,
+        "i3-prefix": "Nap_Nap"
+    },
+    "top_menu":{
+        "width": 600,
+        "height": 30
+    },
+    "players":[
+        {
+            "name": "AI 1",
+            "cmd": "nc localhost 8080"
+        },
+        {
+            "name": "AI 2",
+            "cmd": "echo test"
+        }
+    ],
+    "board":{
+        "tiles_num" : 9,
+        "width" : 3,
+        "tile_width" : 200
+    }
+
+
+}
