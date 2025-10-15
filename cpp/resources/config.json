@@ -2,14 +2,14 @@
     "gui": true,
     "pretty_print": true,
     "debug_visible": true,
-    "name": "Tic-Tac-Toe",
+    "name": "Checkers",
     "window":{
-        "width": 600,
-        "height": 630,
+        "width": 800,
+        "height": 830,
         "i3-prefix": "Nap_Nap"
     },
     "top_menu":{
-        "width": 600,
+        "width": 800,
         "height": 30
     },
     "players":[
@@ -23,9 +23,11 @@
         }
     ],
     "board":{
-        "tiles_num" : 9,
-        "width" : 3,
-        "tile_width" : 200
+        "tiles_num" : 64,
+        "width" : 8,
+        "tile_width" : 100,
+        "light_color": "#F0D9B5",
+        "dark_color": "#B58863"
     }
 
 

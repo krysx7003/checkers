@@ -16,7 +16,6 @@
 #include "gui/widgets/button.h"
 #include "gui/widgets/column.h"
 #include "gui/widgets/dropdown.h"
-#include "gui/widgets/menu.h"
 #include "gui/widgets/row.h"
 #include "player_manager.h"
 
@@ -341,8 +340,8 @@ GLFWwindow *init() {
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetKeyCallback(window, key_callback);
 
-	main_menu = Column(window, 300, 480, 150, 80);
-	top_menu = Row(window, 600, 40, 0, 600);
+	main_menu = Column(window, 300, 480, 250, 160);
+	top_menu = Row(window, 800, 30, 0, 800);
 
 	initMainMenu();
 	initTopMenu();

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "core/primitives/line.h"
 #include "core/resources/sprite.h"
 #include "tile.h"
 
@@ -22,11 +21,13 @@ class Board {
 	float tile_width;
 	glm::vec2 tile_size_px;
 
+	std::string light_color;
+	std::string dark_color;
+
 	bool boardGui = false;
 	bool prettyPrint = true;
 
 	SpriteRenderer *Renderer;
-	Line lines;
 
   public:
 	Tile *Tiles;
