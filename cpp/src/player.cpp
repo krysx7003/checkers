@@ -1,6 +1,7 @@
 #include "player.h"
 #include "player_manager.h"
 
+#include <signal.h>
 #include <sys/socket.h>
 
 #define BUFFER_SIZE 1024

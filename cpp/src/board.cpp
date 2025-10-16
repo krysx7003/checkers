@@ -67,17 +67,20 @@ void Board::Print(bool tooltip) {
 	}
 
 	printf("\n-------------\n");
-	printf("| %c | %c | %c | ", Tiles[0].State, Tiles[1].State, Tiles[2].State);
+	printf("| %s | %s | %s | ", Tiles[0].State.c_str(), Tiles[1].State.c_str(),
+		   Tiles[2].State.c_str());
 	if (tooltip)
 		printf("| 0 | 1 | 2 |");
 	printf("\n----------\n");
 
-	printf("| %c | %c | %c | ", Tiles[3].State, Tiles[4].State, Tiles[5].State);
+	printf("| %s | %s | %s | ", Tiles[3].State.c_str(), Tiles[4].State.c_str(),
+		   Tiles[5].State.c_str());
 	if (tooltip)
 		printf("| 3 | 4 | 5 |");
 	printf("\n----------\n");
 
-	printf("| %c | %c | %c | ", Tiles[6].State, Tiles[7].State, Tiles[8].State);
+	printf("| %s | %s | %s | ", Tiles[6].State.c_str(), Tiles[7].State.c_str(),
+		   Tiles[8].State.c_str());
 	if (tooltip)
 		printf("| 6 | 7 | 8 |");
 	printf("\n----------\n");
@@ -88,10 +91,10 @@ bool Board::TakeTile(int pos) {
 		return false;
 	}
 
-	if (PlayerManager::Curr_player == Player::O) {
-		Tiles[pos].State = Tile::State::TakenO;
+	if (PlayerManager::Curr_player == Player::WHITE) {
+		Tiles[pos].State = Tile::State::TakenWhite;
 	} else {
-		Tiles[pos].State = Tile::State::TakenX;
+		Tiles[pos].State = Tile::State::TakenBlack;
 	}
 	return true;
 }
@@ -102,8 +105,8 @@ void Board::RestetTiles() {
 	}
 }
 
-std::vector<char> Board::GetTilesState() {
-	std::vector<char> tab(tiles_num);
+std::vector<std::string> Board::GetTilesState() {
+	std::vector<std::string> tab(tiles_num);
 	for (int i = 0; i < tiles_num; i++) {
 		tab[i] = Tiles[i].State;
 	}

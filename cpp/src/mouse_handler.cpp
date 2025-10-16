@@ -5,14 +5,14 @@ Tile *MouseHandler::focusedTile = nullptr;
 
 bool MouseHandler::Handle(bool gui_visible) {
 	if (gui_visible) {
-		return Gui_System::Handle();
+		Gui_System::Handle();
 
 	} else if (Gui_System::GetFocus() != nullptr) {
-		return Gui_System::Handle();
+		Gui_System::Handle();
 
 	} else if (focusedTile != nullptr) {
 		focusedTile->Handle();
-		return focusedTile;
+		return true;
 	}
 
 	return false;

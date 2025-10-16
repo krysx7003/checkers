@@ -13,7 +13,6 @@
 #include <string>
 
 #include "game.h"
-#include "gui/gui_system.h"
 #include "gui/widgets/button.h"
 #include "gui/widgets/column.h"
 #include "gui/widgets/dropdown.h"
@@ -56,7 +55,7 @@ void render_debug_frame(GLFWwindow *window);
 static void cursor_position_callback(GLFWwindow *window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
-std::string setPlayer(char player);
+std::string setPlayer(std::string player);
 bool getInput(std::string option);
 void signalHandler(int signum);
 void *playerMove(void *arg);
@@ -114,9 +113,9 @@ int main() {
 				pthread_kill(thread, SIGTERM);
 				pthread_join(thread, nullptr);
 
-				if (game.GetWinner() != '-') {
-					string msg = "Win:";
-					PlayerManager::MsgAll(msg.append(1, game.GetWinner()));
+				if (game.GetWinner() != "-") {
+					string msg = "Win:" + game.GetWinner();
+					PlayerManager::MsgAll(msg);
 				} else {
 					PlayerManager::MsgAll("Draw");
 				}
@@ -129,23 +128,23 @@ int main() {
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	} else {
-		std::string X, O;
+		std::string white, black;
 		game.Init();
 
 		PlayerManager::PrintOptions();
-		X = setPlayer('X');
-		O = setPlayer('O');
+		white = setPlayer("White");
+		black = setPlayer("Black");
 
 		while (true) {
-			game.Start(X, O);
+			game.Start(white, black);
 
 			game.Print();
 
 			if (getInput("Restart (y/n)")) {
 				if (getInput("Change players (y/n)")) {
 					PlayerManager::PrintOptions();
-					X = setPlayer('X');
-					O = setPlayer('O');
+					white = setPlayer("White");
+					black = setPlayer("Black");
 				}
 
 				game.Restart();
@@ -185,14 +184,14 @@ void *playerMove(void *arg) {
 	return NULL;
 }
 
-std::string setPlayer(char player) {
+std::string setPlayer(std::string player) {
 	char c;
 
-	printf("Chose player %c: ", player);
+	printf("Chose player %s: ", player.c_str());
 	scanf(" %c", &c);
 
 	while (!PlayerManager::ValidOption(c)) {
-		printf("Invalid input. Chose player %c: ", player);
+		printf("Invalid input. Chose player %s: ", player.c_str());
 		scanf(" %c", &c);
 	}
 
@@ -282,8 +281,9 @@ void initEndGameMenu() {
 	player1_drop->SetVisibility(true);
 	player2_drop->SetVisibility(true);
 
-	if (game.GetWinner() != '-') {
-		sub_text->SetTextf("Winner %c", game.GetWinner());
+	if (game.GetWinner() != " ") {
+		std::string text = "Winner %s" + game.GetWinner();
+		sub_text->SetText(text);
 	} else {
 		sub_text->SetText("Draw");
 	}
@@ -363,8 +363,8 @@ void render(GLFWwindow *window) {
 		initEndGameMenu();
 	}
 	main_menu.Draw();
-
-	player_text->SetTextf("Current player %c", PlayerManager::Curr_player);
+	std::string text = "Current player " + PlayerManager::Curr_player;
+	player_text->SetText(text);
 	top_menu.Draw();
 
 	main_menu.DrawPopups();
@@ -403,15 +403,18 @@ void render_debug_frame(GLFWwindow *window) {
 	ImGui::Text("Tile %s", tile_name.c_str());
 
 	ImGui::Text("Clicked tile: %d", game.GetLastTile());
-	ImGui::Text("Current player: %c", PlayerManager::Curr_player);
+	ImGui::Text("Current player: %s", PlayerManager::Curr_player.c_str());
 
-	std::vector<char> state = game.board.GetTilesState();
-	ImGui::Text("| %c | %c | %c |\n-------------", state[0], state[1], state[2]);
-	ImGui::Text("| %c | %c | %c |\n-------------", state[3], state[4], state[5]);
-	ImGui::Text("| %c | %c | %c |\n-------------", state[6], state[7], state[8]);
+	std::vector<std::string> state = game.board.GetTilesState();
+	ImGui::Text("| %s | %s | %s |\n-------------", state[0].c_str(), state[1].c_str(),
+				state[2].c_str());
+	ImGui::Text("| %s | %s | %s |\n-------------", state[3].c_str(), state[4].c_str(),
+				state[5].c_str());
+	ImGui::Text("| %s | %s | %s |\n-------------", state[6].c_str(), state[7].c_str(),
+				state[8].c_str());
 
 	if (game.ended) {
-		ImGui::Text("Game ended winner: %c", game.GetWinner());
+		ImGui::Text("Game ended winner: %s", game.GetWinner().c_str());
 	}
 
 	if (ImGui::Button("Restart")) {
@@ -440,7 +443,11 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 		return;
 
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		MouseHandler::Handle(main_menu.Visible);
+		Tile *tile = MouseHandler::GetFocusTile();
+		if (MouseHandler::Handle(main_menu.Visible)) {
+			printf("Clicked Id: %d\n", tile->GetId());
+			game.ChosenTile(tile->GetId());
+		}
 	}
 }
 

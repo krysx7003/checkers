@@ -1,7 +1,6 @@
 #include "core/resource_manager.h"
 
 #include "game.h"
-#include "mouse_handler.h"
 #include "player_manager.h"
 #include "tile.h"
 #include <glm/ext/vector_float2.hpp>
@@ -25,7 +24,7 @@ void Game::Init() {
 }
 
 void Game::Start(std::string player1, std::string player2) {
-	PlayerManager::Curr_player = Player::O;
+	PlayerManager::Curr_player = Player::WHITE;
 	PlayerManager::SetPlayers(player1, player2);
 
 	PlayerManager::StartServer();
@@ -34,12 +33,12 @@ void Game::Start(std::string player1, std::string player2) {
 }
 
 void Game::Print() {
-	std::vector<char> state = board.GetTilesState();
+	std::vector<std::string> state = board.GetTilesState();
 	while (active) {
 		system("clear");
 
 		board.Print(true);
-		printf("Current player: %c\n", PlayerManager::Curr_player);
+		printf("Current player: %s\n", PlayerManager::Curr_player.c_str());
 		int id = -1;
 		do {
 			PlayerManager::BoardState = board.GetState();
@@ -50,7 +49,7 @@ void Game::Print() {
 	if (!IsDraw(state)) {
 		board.Print(false);
 
-		printf("\nPlayer %c won\n", GetWinner());
+		printf("\nPlayer %s won\n", GetWinner().c_str());
 	} else {
 		printf("\nGame ended with a draw\n");
 	}
@@ -59,33 +58,13 @@ void Game::Print() {
 void Game::Render() { board.Render(); }
 
 void Game::Restart() {
-	PlayerManager::Curr_player = Player::O;
+	PlayerManager::Curr_player = Player::WHITE;
 	lastTile = -1;
 	winner = -1;
 	ended = false;
 	active = false;
 
 	board.RestetTiles();
-}
-
-bool Game::ChosenTile(double x, double y) {
-	if (!active) {
-		return false;
-	}
-
-	Tile *tile = MouseHandler::GetFocusTile();
-	if (tile == nullptr) {
-		return false;
-	}
-
-	int tileId = tile->GetId();
-
-	if (board.TakeTile(tileId)) {
-		swapPlayer();
-		lastTile = tileId;
-		return true;
-	}
-	return false;
 }
 
 bool Game::ChosenTile(int tileId) {
@@ -105,13 +84,13 @@ void Game::swapPlayer() {
 	if (!active) {
 		return;
 	}
-	if (PlayerManager::Curr_player == Player::O) {
-		PlayerManager::Curr_player = Player::X;
+	if (PlayerManager::Curr_player == Player::WHITE) {
+		PlayerManager::Curr_player = Player::BLACK;
 	} else {
-		PlayerManager::Curr_player = Player::O;
+		PlayerManager::Curr_player = Player::WHITE;
 	}
 
-	std::vector<char> state = board.GetTilesState();
+	std::vector<std::string> state = board.GetTilesState();
 	if (WinCondition(state)) {
 		ended = true;
 		active = false;
@@ -121,26 +100,26 @@ void Game::swapPlayer() {
 	}
 }
 
-void Game::setWinner(char state) {
-	if (state == Tile::State::TakenO) {
-		winner = Player::O;
-	} else if (state == Tile::State::TakenX) {
-		winner = Player::X;
+void Game::setWinner(std::string state) {
+	if (state == Tile::State::TakenWhite) {
+		winner = Player::WHITE;
+	} else if (state == Tile::State::TakenBlack) {
+		winner = Player::BLACK;
 	}
 }
 
-bool Game::WinCondition(std::vector<char> state) { return false; }
+bool Game::WinCondition(std::vector<std::string> state) { return false; }
 
-bool Game::IsDraw(std::vector<char> state) {
+bool Game::IsDraw(std::vector<std::string> state) {
 	for (int i = 0; i < board.tiles_num; i++) {
 		if (state[i] == Tile::State::Empty) {
 			return false;
 		}
 	}
-	winner = '-';
+	winner = " ";
 	return true;
 }
 
-char Game::GetWinner() { return winner; }
+std::string Game::GetWinner() { return winner; }
 
 short Game::GetLastTile() { return lastTile; }

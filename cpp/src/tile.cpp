@@ -46,13 +46,18 @@ void Tile::Render() {
 		return;
 	}
 	Texture2D texture;
+	glm::vec4 color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	if (State == Tile::State::TakenWhite) {
+		color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
 	texture = ResourceManager::GetTexture("normal_piece");
 
 	Renderer->DrawSprite(texture, glm::vec2(start_pos_x, start_pos_y), glm::vec2(width, height),
-						 0.0f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+						 0.0f, color);
 }
 
-void Tile::Handle() { State = Tile::State::TakenO; }
+void Tile::Handle() {}
 
 bool Tile::isMouseOn() {
 	double mouseX, mouseY;
@@ -77,4 +82,4 @@ void Tile::SetId(int id) { this->id = id; }
 
 void Tile::SetColor(std::string color_hex) { this->color = hexToColor(color_hex); }
 
-void Tile::SetState(char state) { this->State = state; }
+void Tile::SetState(std::string state) { this->State = state; }

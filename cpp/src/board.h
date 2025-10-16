@@ -41,7 +41,7 @@ class Board {
 	bool TakeTile(int pos);
 	void RestetTiles();
 
-	std::vector<char> GetTilesState();
+	std::vector<std::string> GetTilesState();
 
 	std::string GetState();
 };

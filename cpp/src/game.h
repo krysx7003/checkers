@@ -8,9 +8,9 @@ class Game {
 
 	int top_menu_height;
 	short lastTile = -1;
-	short winner = -1;
+	std::string winner = " ";
 
-	void setWinner(char state);
+	void setWinner(std::string state);
 	void swapPlayer();
 
   public:
@@ -24,12 +24,11 @@ class Game {
 	void Start(std::string player1, std::string player2);
 	void Render();
 	void Print();
-	bool ChosenTile(double x, double y);
 	bool ChosenTile(int tileId);
-	bool WinCondition(std::vector<char> state);
-	bool IsDraw(std::vector<char> state);
+	bool WinCondition(std::vector<std::string> state);
+	bool IsDraw(std::vector<std::string> state);
 	short GetLastTile();
 	void Restart();
 
-	char GetWinner();
+	std::string GetWinner();
 };

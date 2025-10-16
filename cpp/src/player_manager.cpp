@@ -13,9 +13,8 @@ std::map<std::string, std::string> PlayerManager::options = {{PlayerManager::Hum
 
 bool PlayerManager::RequestHandled = false;
 
-Player *PlayerManager::player1 = new Player(Human, Player::O, options[Human]);
-Player *PlayerManager::player2 = new Player(Human, Player::X, options[Human]);
-char PlayerManager::Curr_player = Player::O;
+Player *PlayerManager::player1 = new Player(Human, Player::WHITE, options[Human]);
+Player *PlayerManager::player2 = new Player(Human, Player::BLACK, options[Human]);
 std::string PlayerManager::BoardState = "/ / / / / / / / / /";
 
 int PlayerManager::serverSocket;
@@ -118,7 +117,7 @@ void PlayerManager::check(int res, const char *message) {
 }
 
 int PlayerManager::MakeMove() {
-	if (Curr_player == Player::O) {
+	if (Curr_player == Player::WHITE) {
 		return player1->Prompt();
 	} else {
 		return player2->Prompt();
@@ -126,24 +125,24 @@ int PlayerManager::MakeMove() {
 }
 
 bool PlayerManager::CurrPlayerHuman() {
-	if (Curr_player == Player::O) {
+	if (Curr_player == Player::WHITE) {
 		return player1->Name == Human;
 	} else {
 		return player2->Name == Human;
 	}
 }
 
-void PlayerManager::SetPlayers(std::string playerO, std::string playerX) {
-	if (player1->Name != playerO) {
+void PlayerManager::SetPlayers(std::string playerW, std::string playerB) {
+	if (player1->Name != playerW) {
 		delete player1;
 		player1 = nullptr;
-		player1 = new Player(playerO, Player::O, options[playerO]);
+		player1 = new Player(playerW, Player::WHITE, options[playerW]);
 	}
 
-	if (player2->Name != playerX) {
+	if (player2->Name != playerB) {
 		delete player2;
 		player2 = nullptr;
-		player2 = new Player(playerX, Player::X, options[playerX]);
+		player2 = new Player(playerB, Player::BLACK, options[playerB]);
 	}
 }
 

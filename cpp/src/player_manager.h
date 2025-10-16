@@ -1,6 +1,7 @@
 #pragma once
 
 #include "player.h"
+#include "vector"
 #include <map>
 #include <string>
 
@@ -18,7 +19,7 @@ class PlayerManager {
 
 	static inline std::string Human = "Human";
 
-	static char Curr_player;
+	static inline std::string Curr_player = Player::WHITE;
 	static std::string BoardState;
 	static bool ServerRunning;
 
