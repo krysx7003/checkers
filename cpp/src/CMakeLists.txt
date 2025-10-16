@@ -27,6 +27,7 @@ add_executable(checkers
     tile.cpp
     player.cpp
     player_manager.cpp
+    mouse_handler.cpp
     ${IMGUI_SOURCES}
     ${GLAD_SOURCE}
 )

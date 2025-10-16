@@ -1,7 +1,6 @@
 #include "board.h"
 
 #include "core/resources/shader.h"
-#include "core/resources/texture.h"
 #include "player_manager.h"
 
 #include <GLFW/glfw3.h>
@@ -12,9 +11,8 @@ void Board::Init() {
 
 	boardGui = config["gui"];
 
-	float top_menu_height = config["top_menu"]["height"];
-
 	float window_height = config["window"]["height"].get<int>();
+	float window_width = config["window"]["width"].get<int>();
 	tiles_num = config["board"]["tiles_num"];
 	width = config["board"]["width"];
 	tile_size = 2.0f / width;
@@ -39,11 +37,12 @@ void Board::Init() {
 					Tiles[id].SetColor(dark_color);
 				}
 
+				Tiles[id].SetId(id);
 				Tiles[id].State = Tile::State::Empty;
 			}
 		}
 
-		glm::mat4 projection = glm::ortho(0.0f, 600.0f, window_height, 0.0f, -1.0f, 1.0f);
+		glm::mat4 projection = glm::ortho(0.0f, window_width, 0.0f, window_height, -1.0f, 1.0f);
 		ResourceManager::GetShader("piece").Use().SetInteger("image", 0);
 		ResourceManager::GetShader("piece").SetMatrix4("projection", projection);
 		Renderer = new SpriteRenderer(ResourceManager::GetShader("piece"));
@@ -84,11 +83,6 @@ void Board::Print(bool tooltip) {
 	printf("\n----------\n");
 }
 
-void Board::RenderWin(Texture2D win_texture, glm::vec2 texture_pos, glm::vec2 texture_size) {
-	Renderer->DrawSprite(win_texture, texture_pos, texture_size, 0.0f,
-						 glm::vec4(1.0f, 0.0f, 0.0f, 0.5f));
-}
-
 bool Board::TakeTile(int pos) {
 	if (Tiles[pos].State != Tile::State::Empty) {
 		return false;
@@ -106,16 +100,6 @@ void Board::RestetTiles() {
 	for (int i = 0; i < tiles_num; i++) {
 		Tiles[i].State = Tile::State::Empty;
 	}
-}
-
-int Board::TileUnderMouse(double x, double y) {
-	int i = 0;
-	for (; i < tiles_num; i++) {
-		if (Tiles[i].IsMouseOn(x, y))
-			break;
-	}
-
-	return i;
 }
 
 std::vector<char> Board::GetTilesState() {

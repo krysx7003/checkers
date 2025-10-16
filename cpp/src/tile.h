@@ -7,14 +7,16 @@
 class Tile {
 	int start_pos_x, start_pos_y;
 	int width, height;
+	int id;
 	Rect background;
 	glm::vec4 color;
-	glm::vec2 window;
+	glm::vec2 window_dims;
 
 	SpriteRenderer *Renderer;
 
 	glm::vec4 hexToColor(std::string);
 	void setUpBackground();
+	bool isMouseOn();
 
   public:
 	class State {
@@ -29,8 +31,8 @@ class Tile {
 		: start_pos_x(start_pos_x), start_pos_y(start_pos_y), width(width), height(height) {
 
 		json config = ResourceManager::Config;
-		window.x = config["window"]["width"].get<int>();
-		window.y = config["window"]["height"].get<int>();
+		window_dims.x = config["window"]["width"].get<int>();
+		window_dims.y = config["window"]["height"].get<int>();
 
 		setUpBackground();
 
@@ -42,8 +44,11 @@ class Tile {
 	Tile() {};
 
 	void Render();
-	bool IsMouseOn(double mouseX, double mouseY);
+	void Handle();
 
+	int GetId();
+
+	void SetId(int id);
 	void SetColor(std::string);
 	void SetState(char state);
 };
