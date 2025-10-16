@@ -4,9 +4,6 @@
 #include <string>
 
 class Game {
-	json config;
-
-	int top_menu_height;
 	short lastTile = -1;
 	std::string winner = " ";
 
@@ -23,7 +20,6 @@ class Game {
 
 	void Start(std::string player1, std::string player2);
 	void Render();
-	void Print();
 	bool ChosenTile(int tileId);
 	bool WinCondition(std::vector<std::string> state);
 	bool IsDraw(std::vector<std::string> state);

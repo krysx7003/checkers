@@ -35,16 +35,11 @@ int Player::makeRequest() {
 }
 
 int Player::Prompt() {
-	if (this->Name == PlayerManager::Human) {
-		int id = -1;
-
-		printf("Next move\n> ");
-		scanf("%d", &id);
-		return id;
-
-	} else {
+	if (this->Name != PlayerManager::Human) {
 		return this->makeRequest();
 	}
+	printf("ERROR::PLAYER MANAGER: Prompted player is human");
+	exit(-1);
 }
 
 bool Player::Run() {

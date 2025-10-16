@@ -1,16 +1,10 @@
 {
-    "gui": true,
-    "pretty_print": true,
     "debug_visible": true,
     "name": "Checkers",
     "window":{
         "width": 800,
         "height": 830,
         "i3-prefix": "Nap_Nap"
-    },
-    "top_menu":{
-        "width": 800,
-        "height": 30
     },
     "players":[
         {

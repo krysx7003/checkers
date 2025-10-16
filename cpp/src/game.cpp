@@ -6,19 +6,12 @@
 #include <glm/ext/vector_float2.hpp>
 
 void Game::Init() {
-	config = ResourceManager::Config;
-	top_menu_height = config["top_menu"]["height"].get<int>();
+	ResourceManager::LoadShader("piece.vs", "piece.frag", "piece");
+	ResourceManager::LoadShader("flat_argb.vs", "flat_argb.frag", "argb");
 
-	bool gui = config["gui"];
-
-	if (gui) {
-		ResourceManager::LoadShader("piece.vs", "piece.frag", "piece");
-		ResourceManager::LoadShader("flat_argb.vs", "flat_argb.frag", "argb");
-
-		ResourceManager::LoadTexture("black_dame.png", true, "black_dame");
-		ResourceManager::LoadTexture("white_dame.png", true, "white_dame");
-		ResourceManager::LoadTexture("checkers_normal.png", true, "normal_piece");
-	}
+	ResourceManager::LoadTexture("black_dame.png", true, "black_dame");
+	ResourceManager::LoadTexture("white_dame.png", true, "white_dame");
+	ResourceManager::LoadTexture("checkers_normal.png", true, "normal_piece");
 
 	board.Init();
 }
@@ -30,29 +23,6 @@ void Game::Start(std::string player1, std::string player2) {
 	PlayerManager::StartServer();
 
 	active = true;
-}
-
-void Game::Print() {
-	std::vector<std::string> state = board.GetTilesState();
-	while (active) {
-		system("clear");
-
-		board.Print(true);
-		printf("Current player: %s\n", PlayerManager::Curr_player.c_str());
-		int id = -1;
-		do {
-			PlayerManager::BoardState = board.GetState();
-			id = PlayerManager::MakeMove();
-		} while (!ChosenTile(id));
-	}
-
-	if (!IsDraw(state)) {
-		board.Print(false);
-
-		printf("\nPlayer %s won\n", GetWinner().c_str());
-	} else {
-		printf("\nGame ended with a draw\n");
-	}
 }
 
 void Game::Render() { board.Render(); }

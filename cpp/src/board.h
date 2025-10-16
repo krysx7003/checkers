@@ -16,15 +16,9 @@ using namespace std;
 class Board {
 	json config;
 
-	float tile_size;
 	float tile_width;
-	glm::vec2 tile_size_px;
-
 	std::string light_color;
 	std::string dark_color;
-
-	bool boardGui = false;
-	bool prettyPrint = true;
 
 	SpriteRenderer *Renderer;
 
@@ -37,7 +31,6 @@ class Board {
 	void Init();
 
 	void Render();
-	void Print(bool tooltip);
 	bool TakeTile(int pos);
 	void RestetTiles();
 
