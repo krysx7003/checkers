@@ -19,8 +19,11 @@ class Board {
 	float tile_width;
 	std::string light_color;
 	std::string dark_color;
+	std::vector<char> initial_state;
 
 	SpriteRenderer *Renderer;
+
+	std::vector<char> parseState(std::string initial_state);
 
   public:
 	Tile *Tiles;
@@ -34,7 +37,7 @@ class Board {
 	bool TakeTile(int pos);
 	void RestetTiles();
 
-	std::vector<std::string> GetTilesState();
+	std::vector<char> GetTilesState();
 
 	std::string GetState();
 };

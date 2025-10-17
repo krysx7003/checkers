@@ -45,6 +45,7 @@ json config;
 double currX, currY;
 double spf = 0;
 bool players_notified = false;
+int width;
 
 GLFWwindow *init();
 void render(GLFWwindow *window);
@@ -69,6 +70,7 @@ void resume();
 int main() {
 	config = ResourceManager::LoadConfig();
 	debug_visible = config["debug_visible"];
+	width = config["board"]["width"];
 	pthread_t thread;
 
 	PlayerManager::Init();
@@ -345,13 +347,22 @@ void render_debug_frame(GLFWwindow *window) {
 	ImGui::Text("Clicked tile: %d", game.GetLastTile());
 	ImGui::Text("Current player: %s", PlayerManager::Curr_player.c_str());
 
-	std::vector<std::string> state = game.board.GetTilesState();
-	ImGui::Text("| %s | %s | %s |\n-------------", state[0].c_str(), state[1].c_str(),
-				state[2].c_str());
-	ImGui::Text("| %s | %s | %s |\n-------------", state[3].c_str(), state[4].c_str(),
-				state[5].c_str());
-	ImGui::Text("| %s | %s | %s |\n-------------", state[6].c_str(), state[7].c_str(),
-				state[8].c_str());
+	std::vector<char> state = game.board.GetTilesState();
+	stringstream line;
+	for (int id = 0; id < width * width; id++) {
+		if (id % 8 == 0 && id != 0) {
+			line << "|";
+			ImGui::Text("%s", line.str().c_str());
+			ImGui::Text("----------------------------------");
+			line << "|";
+			line.str("");
+		}
+		line << "| " << state[id] << " ";
+	}
+	if (!line.str().empty()) {
+		line << "|";
+		ImGui::Text("%s", line.str().c_str());
+	}
 
 	if (game.ended) {
 		ImGui::Text("Game ended winner: %s", game.GetWinner().c_str());

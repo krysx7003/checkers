@@ -60,7 +60,7 @@ void Game::swapPlayer() {
 		PlayerManager::Curr_player = Player::WHITE;
 	}
 
-	std::vector<std::string> state = board.GetTilesState();
+	std::vector<char> state = board.GetTilesState();
 	if (WinCondition(state)) {
 		ended = true;
 		active = false;
@@ -70,7 +70,7 @@ void Game::swapPlayer() {
 	}
 }
 
-void Game::setWinner(std::string state) {
+void Game::setWinner(char state) {
 	if (state == Tile::State::TakenWhite) {
 		winner = Player::WHITE;
 	} else if (state == Tile::State::TakenBlack) {
@@ -78,9 +78,9 @@ void Game::setWinner(std::string state) {
 	}
 }
 
-bool Game::WinCondition(std::vector<std::string> state) { return false; }
+bool Game::WinCondition(std::vector<char> state) { return false; }
 
-bool Game::IsDraw(std::vector<std::string> state) {
+bool Game::IsDraw(std::vector<char> state) {
 	for (int i = 0; i < board.tiles_num; i++) {
 		if (state[i] == Tile::State::Empty) {
 			return false;

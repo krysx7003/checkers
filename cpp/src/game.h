@@ -7,7 +7,7 @@ class Game {
 	short lastTile = -1;
 	std::string winner = " ";
 
-	void setWinner(std::string state);
+	void setWinner(char state);
 	void swapPlayer();
 
   public:
@@ -21,8 +21,8 @@ class Game {
 	void Start(std::string player1, std::string player2);
 	void Render();
 	bool ChosenTile(int tileId);
-	bool WinCondition(std::vector<std::string> state);
-	bool IsDraw(std::vector<std::string> state);
+	bool WinCondition(std::vector<char> state);
+	bool IsDraw(std::vector<char> state);
 	short GetLastTile();
 	void Restart();
 

@@ -21,7 +21,8 @@
         "width" : 8,
         "tile_width" : 100,
         "light_color": "#F0D9B5",
-        "dark_color": "#B58863"
+        "dark_color": "#B58863",
+        "state": "1p1p1p1p/p1p1p1p1/1d1d1d1d/8/8/D1D1D1D1/1P1P1P1P/P1P1P1P1"
     }
 
 

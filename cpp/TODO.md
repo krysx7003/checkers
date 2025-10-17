@@ -5,9 +5,9 @@
 - [x] Fix displaying of icons
 - [x] Add icons for checkers pieces
 - [x] Add player switching
-- [ ] Add ability to display all the pieces
-- [ ] Add cmd arg with starting board state
-- [ ] Fix printing board state
+- [x] Add ability to display all the pieces
+- [x] Add config option with starting board state
+- [x] Fix printing board state
 - [ ] Add drag and drop functionality
 
 ## Game rules

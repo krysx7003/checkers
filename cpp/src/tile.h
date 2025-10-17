@@ -21,13 +21,13 @@ class Tile {
   public:
 	class State {
 	  public:
-		static inline std::string Empty = "";
-		static inline std::string TakenWhite = "TW";
-		static inline std::string TakenBlack = "TB";
-		static inline std::string TakenWhiteDame = "TWQ";
-		static inline std::string TakenBlackDame = "TBQ";
+		static const char Empty = ' ';
+		static const char TakenWhite = 'P';
+		static const char TakenBlack = 'p';
+		static const char TakenWhiteDame = 'D';
+		static const char TakenBlackDame = 'd';
 	};
-	std::string State;
+	char State;
 
 	Tile(int start_pos_x, int start_pos_y, int width, int height)
 		: start_pos_x(start_pos_x), start_pos_y(start_pos_y), width(width), height(height) {
@@ -45,6 +45,8 @@ class Tile {
 	};
 	Tile() {};
 
+	static bool IsValidPiece(char piece);
+
 	void Render();
 	void Handle();
 
@@ -52,5 +54,5 @@ class Tile {
 
 	void SetId(int id);
 	void SetColor(std::string);
-	void SetState(std::string state);
+	void SetState(char state);
 };
