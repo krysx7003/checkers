@@ -6,6 +6,9 @@
 
 #define BUFFER_SIZE 1024
 
+std::string Player::WHITE = "White";
+std::string Player::BLACK = "Black";
+
 int Player::makeRequest() {
 	int id = -1;
 	Msg("MOVE:" + PlayerManager::BoardState + "\n");

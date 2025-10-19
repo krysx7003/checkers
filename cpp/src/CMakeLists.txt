@@ -28,6 +28,7 @@ add_executable(checkers
     player.cpp
     player_manager.cpp
     mouse_handler.cpp
+    piece.cpp
     ${IMGUI_SOURCES}
     ${GLAD_SOURCE}
 )

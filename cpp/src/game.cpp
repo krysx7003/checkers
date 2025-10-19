@@ -2,7 +2,6 @@
 
 #include "game.h"
 #include "player_manager.h"
-#include "tile.h"
 #include <glm/ext/vector_float2.hpp>
 
 void Game::Init() {
@@ -38,6 +37,7 @@ void Game::Restart() {
 }
 
 bool Game::ChosenTile(int tileId) {
+	// Move this to Tile::Handle
 	if (!active) {
 		return false;
 	}
@@ -71,24 +71,16 @@ void Game::swapPlayer() {
 }
 
 void Game::setWinner(char state) {
-	if (state == Tile::State::TakenWhite) {
+	if (state == Piece::WHITE) {
 		winner = Player::WHITE;
-	} else if (state == Tile::State::TakenBlack) {
+	} else if (state == Piece::BLACK) {
 		winner = Player::BLACK;
 	}
 }
 
 bool Game::WinCondition(std::vector<char> state) { return false; }
 
-bool Game::IsDraw(std::vector<char> state) {
-	for (int i = 0; i < board.tiles_num; i++) {
-		if (state[i] == Tile::State::Empty) {
-			return false;
-		}
-	}
-	winner = " ";
-	return true;
-}
+bool Game::IsDraw(std::vector<char> state) { return false; }
 
 std::string Game::GetWinner() { return winner; }
 

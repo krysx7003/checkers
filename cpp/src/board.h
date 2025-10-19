@@ -23,6 +23,7 @@ class Board {
 
 	SpriteRenderer *Renderer;
 
+	char getPieceChar(int i);
 	std::vector<char> parseState(std::string initial_state);
 
   public:

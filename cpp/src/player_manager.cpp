@@ -16,6 +16,7 @@ bool PlayerManager::RequestHandled = false;
 Player *PlayerManager::player1 = new Player(Human, Player::WHITE, options[Human]);
 Player *PlayerManager::player2 = new Player(Human, Player::BLACK, options[Human]);
 std::string PlayerManager::BoardState = "/ / / / / / / / / /";
+std::string PlayerManager::Curr_player = Player::WHITE;
 
 int PlayerManager::serverSocket;
 bool PlayerManager::ServerRunning = false;

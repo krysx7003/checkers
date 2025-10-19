@@ -3,6 +3,7 @@
 #include "core/primitives/rect.h"
 #include "core/resource_manager.h"
 #include "core/resources/sprite.h"
+#include "piece.h"
 
 class Tile {
 	int start_pos_x, start_pos_y;
@@ -19,15 +20,7 @@ class Tile {
 	bool isMouseOn();
 
   public:
-	class State {
-	  public:
-		static const char Empty = ' ';
-		static const char TakenWhite = 'P';
-		static const char TakenBlack = 'p';
-		static const char TakenWhiteDame = 'D';
-		static const char TakenBlackDame = 'd';
-	};
-	char State;
+	std::unique_ptr<Piece> piece;
 
 	Tile(int start_pos_x, int start_pos_y, int width, int height)
 		: start_pos_x(start_pos_x), start_pos_y(start_pos_y), width(width), height(height) {
@@ -38,21 +31,20 @@ class Tile {
 
 		setUpBackground();
 
-		glm::mat4 projection = glm::ortho(0.0f, 600.0f, 640.0f, 0.0f, -1.0f, 1.0f);
+		glm::mat4 projection = glm::ortho(0.0f, window_dims.x, 0.0f, window_dims.y, -1.0f, 1.0f);
 		ResourceManager::GetShader("piece").Use().SetInteger("image", 0);
 		ResourceManager::GetShader("piece").SetMatrix4("projection", projection);
 		Renderer = new SpriteRenderer(ResourceManager::GetShader("piece"));
 	};
 	Tile() {};
 
-	static bool IsValidPiece(char piece);
-
 	void Render();
 	void Handle();
 
 	int GetId();
+	Piece *GetPiece();
 
 	void SetId(int id);
 	void SetColor(std::string);
-	void SetState(char state);
+	void SetPiece(char state);
 };

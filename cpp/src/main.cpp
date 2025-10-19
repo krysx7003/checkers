@@ -77,6 +77,7 @@ int main() {
 
 	window = init();
 	game.Init();
+	MouseHandler::Init();
 
 	double lastTime = glfwGetTime();
 	int nbFrames = 0;
@@ -146,7 +147,7 @@ void initMainMenu() {
 	main_menu.SetOutline(glm::bvec4(true));
 
 	main_text = dynamic_cast<Text_Field *>(
-		main_menu.AddItem(Gui_Item::Type::TEXT_FIELD, 250, 60, "Tic-Tac-Toe"));
+		main_menu.AddItem(Gui_Item::Type::TEXT_FIELD, 250, 60, "Checkers"));
 	main_text->SetTextSize("big");
 	main_text->SetAlignmentHor(AlignmentHor::CENTER);
 	sub_text = dynamic_cast<Text_Field *>(
@@ -311,6 +312,10 @@ void render(GLFWwindow *window) {
 
 	main_menu.DrawPopups();
 
+	if (!main_menu.Visible) {
+		MouseHandler::Draw();
+	}
+
 	if (debug_visible) {
 		render_debug_frame(window);
 	}
@@ -370,6 +375,10 @@ void render_debug_frame(GLFWwindow *window) {
 
 	if (ImGui::Button("Restart")) {
 		restart();
+	}
+
+	if (ImGui::Button("Set piece p")) {
+		MouseHandler::SetPiece('p');
 	}
 
 	ImGui::End();

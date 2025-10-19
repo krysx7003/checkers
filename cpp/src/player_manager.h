@@ -19,7 +19,7 @@ class PlayerManager {
 
 	static inline std::string Human = "Human";
 
-	static inline std::string Curr_player = Player::WHITE;
+	static std::string Curr_player;
 	static std::string BoardState;
 	static bool ServerRunning;
 

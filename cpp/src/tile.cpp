@@ -42,42 +42,13 @@ void Tile::Render() {
 		MouseHandler::SetFocusTile(nullptr);
 	}
 
-	if (State == Tile::State::Empty) {
+	if (piece == nullptr) {
 		return;
 	}
-	Texture2D texture = ResourceManager::GetTexture("normal_piece");
-	glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	if (State == Tile::State::TakenBlack) {
-		color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	} else if (State == Tile::State::TakenWhiteDame) {
-		texture = ResourceManager::GetTexture("white_dame");
-
-	} else if (State == Tile::State::TakenBlackDame) {
-		texture = ResourceManager::GetTexture("black_dame");
-	}
-
-	Renderer->DrawSprite(texture, glm::vec2(start_pos_x, start_pos_y), glm::vec2(width, height),
-						 180.0f, color);
+	piece->Draw(glm::vec2(start_pos_x, start_pos_y), glm::vec2(width, height), Renderer);
 }
 
 void Tile::Handle() {}
-
-bool Tile::IsValidPiece(char piece) {
-
-	switch (piece) {
-	case Tile::State::Empty:
-	case Tile::State::TakenWhite:
-	case Tile::State::TakenBlack:
-	case Tile::State::TakenWhiteDame:
-	case Tile::State::TakenBlackDame:
-		return true;
-
-	default:
-		return false;
-	}
-}
 
 bool Tile::isMouseOn() {
 	double mouseX, mouseY;
@@ -98,8 +69,16 @@ bool Tile::isMouseOn() {
 
 int Tile::GetId() { return this->id; }
 
+Piece *Tile::GetPiece() { return this->piece.get(); }
+
 void Tile::SetId(int id) { this->id = id; }
 
 void Tile::SetColor(std::string color_hex) { this->color = hexToColor(color_hex); }
 
-void Tile::SetState(char state) { this->State = state; }
+void Tile::SetPiece(char c) {
+	if (c != ' ') {
+		piece = std::make_unique<Piece>(c);
+	} else {
+		piece.reset();
+	}
+}

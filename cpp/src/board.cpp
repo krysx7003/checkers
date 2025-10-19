@@ -1,6 +1,7 @@
 #include "board.h"
 
 #include "core/resources/shader.h"
+#include "piece.h"
 #include "player_manager.h"
 
 #include <GLFW/glfw3.h>
@@ -35,7 +36,7 @@ void Board::Init() {
 			}
 
 			Tiles[id].SetId(id);
-			Tiles[id].State = initial_state[id];
+			Tiles[id].SetPiece(initial_state[id]);
 		}
 	}
 
@@ -73,7 +74,7 @@ std::vector<char> Board::parseState(std::string initial_state) {
 
 				file += num_spaces;
 
-			} else if (Tile::IsValidPiece(piece)) {
+			} else if (Piece::IsValid(piece)) {
 				state.at(id) = piece;
 				id++;
 				file++;
@@ -98,28 +99,40 @@ void Board::Render() {
 }
 
 bool Board::TakeTile(int pos) {
-	if (Tiles[pos].State != Tile::State::Empty) {
+	// If there is piece held try to place it down.
+	// Else Check if there is a piece there and pick it up
+	Piece *piece = Tiles[pos].GetPiece();
+	if (piece != nullptr) {
 		return false;
 	}
 
 	if (PlayerManager::Curr_player == Player::WHITE) {
-		Tiles[pos].State = Tile::State::TakenWhite;
+		Tiles[pos].SetPiece('P');
 	} else {
-		Tiles[pos].State = Tile::State::TakenBlack;
+		Tiles[pos].SetPiece('p');
 	}
 	return true;
 }
 
 void Board::RestetTiles() {
 	for (int i = 0; i < tiles_num; i++) {
-		Tiles[i].State = initial_state[i];
+		Tiles[i].SetPiece(initial_state[i]);
+	}
+}
+
+char Board::getPieceChar(int i) {
+	Piece *piece = Tiles[i].GetPiece();
+	if (piece != nullptr) {
+		return piece->ToChar();
+	} else {
+		return ' ';
 	}
 }
 
 std::vector<char> Board::GetTilesState() {
 	std::vector<char> tab(tiles_num);
 	for (int i = 0; i < tiles_num; i++) {
-		tab[i] = Tiles[i].State;
+		tab[i] = getPieceChar(i);
 	}
 	return tab;
 }
@@ -127,7 +140,7 @@ std::vector<char> Board::GetTilesState() {
 std::string Board::GetState() {
 	stringstream ss;
 	for (int i = 0; i < tiles_num; i++) {
-		ss << "\\" << Tiles[i].State;
+		ss << "\\" << getPieceChar(i);
 	}
 
 	ss << "\\";

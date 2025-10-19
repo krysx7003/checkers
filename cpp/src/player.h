@@ -11,8 +11,8 @@ class Player {
 	int makeRequest();
 
   public:
-	static inline std::string WHITE = "White";
-	static inline std::string BLACK = "Black";
+	static std::string WHITE;
+	static std::string BLACK;
 
 	std::string Name;
 	std::string Cmd; //"nc localhost 8080"
