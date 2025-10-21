@@ -11,6 +11,8 @@ class Tile {
 	int id;
 	Rect background;
 	glm::vec4 color;
+	Rect highlight;
+	glm::vec4 high_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 	glm::vec2 window_dims;
 
 	SpriteRenderer *Renderer;
@@ -39,12 +41,13 @@ class Tile {
 	Tile() {};
 
 	void Render();
-	void Handle();
+	bool Handle();
 
 	int GetId();
 	Piece *GetPiece();
 
 	void SetId(int id);
 	void SetColor(std::string);
+	void SetHighlight(std::string color_hex);
 	void SetPiece(char state);
 };

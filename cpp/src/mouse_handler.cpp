@@ -1,10 +1,13 @@
 #include "mouse_handler.h"
 #include "gui/gui_system.h"
+#include <utility>
 
 Tile *MouseHandler::focusedTile = nullptr;
 std::unique_ptr<Piece> MouseHandler::piece;
 glm::vec2 MouseHandler::window_dims;
 glm::vec2 MouseHandler::size;
+int MouseHandler::Return_id = -1;
+int MouseHandler::LastClickedTile = -1;
 
 SpriteRenderer *MouseHandler::renderer;
 
@@ -30,8 +33,13 @@ bool MouseHandler::Handle(bool gui_visible) {
 		Gui_System::Handle();
 
 	} else if (focusedTile != nullptr) {
-		focusedTile->Handle();
-		return true;
+		LastClickedTile = focusedTile->GetId();
+		if (!focusedTile->Handle()) {
+			Return_id = focusedTile->GetId();
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	return false;
@@ -51,6 +59,8 @@ void MouseHandler::Draw() {
 	piece->Draw(glm::vec2(x, y), size, renderer);
 }
 
+void MouseHandler::Reset() { piece.reset(); }
+
 void MouseHandler::SetPiece(char c) {
 	if (c != ' ') {
 		piece = std::make_unique<Piece>(c);
@@ -61,6 +71,9 @@ void MouseHandler::SetPiece(char c) {
 
 void MouseHandler::SetFocusGui(Button *button) { Gui_System::SetFocus(button); }
 void MouseHandler::SetFocusTile(Tile *tile) { focusedTile = tile; }
+void MouseHandler::SetPiece(std::unique_ptr<Piece> p) { piece = std::move(p); }
 
+Piece *MouseHandler::GetPiece() { return piece.get(); }
+std::unique_ptr<Piece> MouseHandler::TakePiece() { return std::move(piece); }
 Tile *MouseHandler::GetFocusTile() { return focusedTile; }
 Button *MouseHandler::GetFocusButton() { return Gui_System::GetFocus(); }

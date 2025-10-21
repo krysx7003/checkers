@@ -40,6 +40,7 @@ Button *exit_btn;
 Button *menu_btn;
 Text_Field *player1_text, *player2_text;
 Dropdown *player1_drop, *player2_drop;
+std::vector<int> valid;
 
 json config;
 double currX, currY;
@@ -225,7 +226,7 @@ void initEndGameMenu() {
 	player2_drop->SetVisibility(true);
 
 	if (game.GetWinner() != " ") {
-		std::string text = "Winner %s" + game.GetWinner();
+		std::string text = "Winner " + game.GetWinner();
 		sub_text->SetText(text);
 	} else {
 		sub_text->SetText("Draw");
@@ -377,8 +378,12 @@ void render_debug_frame(GLFWwindow *window) {
 		restart();
 	}
 
-	if (ImGui::Button("Set piece p")) {
-		MouseHandler::SetPiece('p');
+	if (ImGui::Button("Valid moves id: 33")) {
+		valid = game.board.ValidMoves(33, new Piece('d'));
+	}
+	if (ImGui::Button("Reset highlight")) {
+		valid.push_back(33);
+		game.board.ResetHighlight(valid);
 	}
 
 	ImGui::End();
@@ -405,7 +410,31 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		Tile *tile = MouseHandler::GetFocusTile();
 		if (MouseHandler::Handle(main_menu.Visible)) {
-			game.ChosenTile(tile->GetId());
+			int clickedTile = MouseHandler::LastClickedTile;
+
+			auto it = find(valid.begin(), valid.end(), clickedTile);
+			if (it != valid.end())
+				game.board.Tiles[clickedTile].piece = MouseHandler::TakePiece();
+
+			Piece *p = game.board.Tiles[clickedTile].piece.get();
+			if (clickedTile != MouseHandler::Return_id && MouseHandler::GetPiece() == nullptr) {
+				if (!game.CapturePiece(MouseHandler::Return_id, clickedTile, p)) {
+					game.swapPlayer();
+				}
+				game.RankUp(clickedTile, p->Color);
+				game.CheckWinCond();
+			}
+			game.board.ResetHighlight(valid);
+		}
+
+		if (MouseHandler::GetPiece() != nullptr) {
+			valid = game.board.ValidMoves(MouseHandler::Return_id, MouseHandler::GetPiece());
+			for (int move : valid) {
+				game.board.Tiles[move].SetHighlight("#00FF0022");
+			}
+
+			game.board.Tiles[MouseHandler::Return_id].SetHighlight("#0000FF22");
+			valid.push_back(MouseHandler::Return_id);
 		}
 	}
 }
@@ -445,6 +474,7 @@ void restart() {
 	lock_visible = false;
 	main_menu.SetVisibility(false);
 	MouseHandler::SetFocusGui(nullptr);
+	MouseHandler::Reset();
 
 	initPauseMenu();
 	main_menu.UpdateItems();

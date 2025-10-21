@@ -1,5 +1,6 @@
 #include "tile.h"
 #include "mouse_handler.h"
+#include "player_manager.h"
 
 glm::vec4 Tile::hexToColor(std::string color) {
 	if (color[0] != '#') {
@@ -29,10 +30,12 @@ void Tile::setUpBackground() {
 	glm::vec3 top_right = {fStart_pos_x + fWidth, fStart_pos_y + fHeight, 0.0f};
 
 	background.Init(bottom_left, bottom_right, top_left, top_right);
+	highlight.Init(bottom_left, bottom_right, top_left, top_right);
 }
 
 void Tile::Render() {
-	this->background.Draw(this->color);
+	background.Draw(color);
+	highlight.Draw(high_color);
 
 	if (isMouseOn()) {
 		if (!MouseHandler::GetFocusTile() || MouseHandler::GetFocusTile() != this) {
@@ -48,7 +51,18 @@ void Tile::Render() {
 	piece->Draw(glm::vec2(start_pos_x, start_pos_y), glm::vec2(width, height), Renderer);
 }
 
-void Tile::Handle() {}
+bool Tile::Handle() {
+	if (MouseHandler::GetPiece() != nullptr && piece == nullptr) {
+		return true;
+	} else if (MouseHandler::GetPiece() == nullptr && piece != nullptr) {
+		if (PlayerManager::Curr_player == Player::WHITE && piece->Color == Piece::WHITE ||
+			PlayerManager::Curr_player == Player::BLACK && piece->Color == Piece::BLACK) {
+			MouseHandler::SetPiece(std::move(piece));
+		}
+		return false;
+	}
+	return false;
+}
 
 bool Tile::isMouseOn() {
 	double mouseX, mouseY;
@@ -74,6 +88,7 @@ Piece *Tile::GetPiece() { return this->piece.get(); }
 void Tile::SetId(int id) { this->id = id; }
 
 void Tile::SetColor(std::string color_hex) { this->color = hexToColor(color_hex); }
+void Tile::SetHighlight(std::string color_hex) { high_color = hexToColor(color_hex); }
 
 void Tile::SetPiece(char c) {
 	if (c != ' ') {

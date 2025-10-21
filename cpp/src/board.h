@@ -24,6 +24,7 @@ class Board {
 	SpriteRenderer *Renderer;
 
 	char getPieceChar(int i);
+	std::vector<int> genrateMoves(int id, int direction, Piece *p);
 	std::vector<char> parseState(std::string initial_state);
 
   public:
@@ -35,8 +36,10 @@ class Board {
 	void Init();
 
 	void Render();
-	bool TakeTile(int pos);
 	void RestetTiles();
+	void ResetHighlight(std::vector<int> validTiles);
+	std::vector<int> ValidMoves(int id, Piece *p);
+	void RemovePiece(int id);
 
 	std::vector<char> GetTilesState();
 

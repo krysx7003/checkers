@@ -2,7 +2,6 @@
 
 #include "core/resources/shader.h"
 #include "piece.h"
-#include "player_manager.h"
 
 #include <GLFW/glfw3.h>
 #include <cstdio>
@@ -98,20 +97,68 @@ void Board::Render() {
 	}
 }
 
-bool Board::TakeTile(int pos) {
-	// If there is piece held try to place it down.
-	// Else Check if there is a piece there and pick it up
-	Piece *piece = Tiles[pos].GetPiece();
-	if (piece != nullptr) {
-		return false;
+void Board::RemovePiece(int id) { Tiles[id].piece.reset(); }
+
+std::vector<int> Board::ValidMoves(int id, Piece *p) {
+	int rank = id / width;
+
+	std::vector<int> forward_moves = genrateMoves(id, width, p);
+
+	std::vector<int> backward_moves = genrateMoves(id, width * -1, p);
+
+	std::vector<int> moves;
+	if (p->Type == Piece::PAWN) {
+		if (p->Color == Piece::BLACK) {
+			moves.insert(moves.begin(), forward_moves.begin(), forward_moves.end());
+		} else {
+			moves.insert(moves.begin(), backward_moves.begin(), backward_moves.end());
+		}
+
+	} else if (p->Type == Piece::DAME) {
+		moves.insert(moves.begin(), backward_moves.begin(), backward_moves.end());
+		moves.insert(moves.begin(), forward_moves.begin(), forward_moves.end());
 	}
 
-	if (PlayerManager::Curr_player == Player::WHITE) {
-		Tiles[pos].SetPiece('P');
-	} else {
-		Tiles[pos].SetPiece('p');
+	return moves;
+}
+
+std::vector<int> Board::genrateMoves(int id, int direction, Piece *p) {
+	int file = id % width;
+	std::vector<int> moves;
+	if (file - 1 >= 0) {
+		int tile_id = id + direction - 1;
+		if (tile_id >= 0 && tile_id < tiles_num) {
+			if (Tiles[tile_id].piece == nullptr) {
+				moves.push_back(tile_id);
+
+			} else if (Tiles[tile_id].piece->Color != p->Color) {
+				tile_id += direction - 1;
+				if (Tiles[tile_id].piece == nullptr && tile_id >= 0 && file - 2 >= 0)
+					moves.push_back(tile_id);
+			}
+		}
 	}
-	return true;
+
+	if (file + 1 < width) {
+		int tile_id = id + direction + 1;
+		if (tile_id >= 0 && tile_id < tiles_num) {
+			if (Tiles[tile_id].piece == nullptr) {
+				moves.push_back(tile_id);
+
+			} else if (Tiles[tile_id].piece->Color != p->Color) {
+				tile_id += direction + 1;
+				if (Tiles[tile_id].piece == nullptr && tile_id < tiles_num && file + 2 < width)
+					moves.push_back(tile_id);
+			}
+		}
+	}
+	return moves;
+}
+
+void Board::ResetHighlight(std::vector<int> validTiles) {
+	for (int tile : validTiles) {
+		Tiles[tile].SetHighlight("#FFFFFF00");
+	}
 }
 
 void Board::RestetTiles() {
